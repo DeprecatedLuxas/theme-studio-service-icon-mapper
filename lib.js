@@ -1,27 +1,39 @@
 const axios = require("axios");
 const fs = require("fs");
 
-
 function decode(content) {
   return Buffer.from(content, "base64").toString("utf-8");
 }
 
+function indexOfStr(str, strr) {
+  return str.indexOf(strr) + strr.length;
+}
+
 module.exports = {
+  getLanguages: async () => {
+    const data = await (
+      await axios.get(
+        "https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/src/icons/languageIcons.ts"
+      )
+    ).data;
+    let content = data.substring(
+      indexOfStr(data, "export const languageIcons: LanguageIcon[] = ")
+    );
+
+    // For some reason i need to save it to a file and then read it back in.
+    fs.writeFileSync(
+      "./languageIcons.js",
+      "const languageIcons = " + content + "\n\nmodule.exports = languageIcons;"
+    );
+  },
   getFile: async () => {
     const data = await (
       await axios.get(
-        "https://api.github.com/repos/Pkief/vscode-material-icon-theme/contents/src/icons/fileIcons.ts",
-        {
-          headers: {
-            Authorization: `token ${process.env.GITHUB_TOKEN}`,
-          },
-        }
+        "https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/src/icons/fileIcons.ts"
       )
     ).data;
-    let content = decode(data.content);
-    content = content.substring(
-      content.indexOf("export const fileIcons: FileIcons = ") +
-        "export const fileIcons: FileIcons = ".length
+    let content = data.substring(
+      indexOfStr(data, "export const fileIcons: FileIcons = ")
     );
 
     content = content
@@ -43,19 +55,13 @@ module.exports = {
   getFolder: async () => {
     const data = await (
       await axios.get(
-        "https://api.github.com/repos/Pkief/vscode-material-icon-theme/contents/src/icons/folderIcons.ts",
-        {
-          headers: {
-            Authorization: `token ${process.env.GITHUB_TOKEN}`,
-          },
-        }
+        "https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/src/icons/folderIcons.ts"
       )
     ).data;
-    let content = decode(data.content);
-    content = content.substring(
-      content.indexOf("export const folderIcons: FolderTheme[] = ") +
-        "export const folderIcons: FolderTheme[] = ".length
+    let content = data.substring(
+      indexOfStr(data, "export const folderIcons: FolderTheme[] = ")
     );
+
 
     content = content
       .replace(/\n/g, "")

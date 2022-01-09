@@ -1,11 +1,9 @@
 require("dotenv").config();
 const app = require("express")();
-const axios = require("axios");
-const fs = require("fs");
 const lib = require("./lib");
 
 app.get("/iconmapping/file", async (req, res) => {
-  lib.getFile();
+  await lib.getFile();
 
   const fileIcons = require("./fileIcons.js");
 
@@ -13,25 +11,35 @@ app.get("/iconmapping/file", async (req, res) => {
 });
 
 app.get("/iconmapping/folder", async (req, res) => {
-  lib.getFolder();
+  await lib.getFolder();
 
   const folderIcons = require("./folderIcons.js");
 
   res.json(folderIcons);
 });
 
+app.get("/iconmapping/language", async (req, res) => {
+  await lib.getLanguages();
+
+  const languageIcons = require("./languageIcons.js");
+
+  res.json(languageIcons);
+});
+
 app.get("/iconmapping/all", async (req, res) => {
-  lib.getFile();
-  lib.getFolder();
-  
+  await lib.getFile();
+  await lib.getFolder();
+  await lib.getLanguages();
+
   const fileIcons = require("./fileIcons.js");
   const folderIcons = require("./folderIcons.js");
+  const languageIcons = require("./languageIcons.js");
 
-  const obj = {
+  res.json({
     files: fileIcons,
     folders: folderIcons,
-  }
-  res.json(obj);
-})
+    languages: languageIcons,
+  });
+});
 
 app.listen(3000, () => console.log("Server started on port 3000"));
