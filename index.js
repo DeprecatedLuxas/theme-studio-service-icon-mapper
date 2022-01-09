@@ -29,16 +29,16 @@ app.get("/iconmapping/language", async (req, res) => {
 app.get("/iconmapping/all", async (req, res) => {
   await lib.getFile();
   await lib.getFolder();
-  await lib.getLanguages();
+  await lib.getLanguage();
 
   const fileIcons = require("./fileIcons.js");
   const folderIcons = require("./folderIcons.js");
   const languageIcons = require("./languageIcons.js");
 
   res.json({
-    files: fileIcons,
-    folders: folderIcons,
-    languages: languageIcons,
+    file: fileIcons,
+    folder: folderIcons,
+    language: languageIcons,
   });
 });
 

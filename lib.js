@@ -10,7 +10,7 @@ function indexOfStr(str, strr) {
 }
 
 module.exports = {
-  getLanguages: async () => {
+  getLanguage: async () => {
     const data = await (
       await axios.get(
         "https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/src/icons/languageIcons.ts"
